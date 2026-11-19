@@ -1,0 +1,221 @@
+{
+  "rounds": [
+    {
+      "roundName": "Rhyme Time",
+      "roundType": "buzzer",
+      "questions": [
+        {
+          "image1": "/images/elvis.jpeg",
+          "image2": "/images/pelvis.jpeg",
+          "answer": "Elvis / Pelvis"
+        },
+        {
+          "image1": "/images/rupertbear.jpeg",
+          "image2": "/images/timessquare.jpeg",
+          "answer": "Rupert Bear / Times Square"
+        },
+        {
+          "image1": "/images/charliexcx.jpeg",
+          "image2": "/images/trex.jpeg",
+          "answer": "Charlie XCX / Tyrannosaurus Rex"
+        },
+        {
+          "image1": "/images/swimmingpool.jpeg",
+          "image2": "/images/liverpool.jpeg",
+          "answer": "Swimming Pool / Liverpool"
+        },
+        {
+          "image1": "/images/birdsofafeather.jpeg",
+          "image2": "/images/scottishheather.jpeg",
+          "answer": "Birds Of A Feather / Scottish Heather"
+        }
+      ]
+    },
+    {
+      "roundName": "I'm terrible at dating",
+      "roundType": "secret",
+      "questions": [
+        {
+          "question": "When was the first IPhone released",
+          "answer": "2007"
+        },
+        {
+          "question": "When did the curiosity rover first land on Mars",
+          "answer": "2012"
+        },
+        {
+          "question": "When were the first pictures of the James Webb Telescope",
+          "answer": "2022"
+        }
+      ]
+    },
+    {
+      "roundName": "Highbrow / Lowbrow",
+      "roundType": "highbrow_lowbrow",
+      "questions": [
+        {
+          "highbrow": "Which 1850 play by Wilkie Collins, co-written with Charles Dickens, was inspired by the disappearance of Sir John Franklin's Arctic expedition?",
+          "lowbrow": "Which 2013 Disney animated film features Queen Elsa singing \"Let It Go\"?",
+          "answer": "Frozen"
+        },
+        {
+          "highbrow": "Which Roman god of commerce, travelers, and thieves was traditionally depicted wearing winged sandals called talaria?",
+          "lowbrow": "Which planet is closest to the Sun in our solar system?",
+          "answer": "Mercury"
+        },
+        {
+          "highbrow": "What is the first name of the fictional French governess who cares for Mr. Rochester's ward in Charlotte Brontë's novel Jane Eyre?",
+          "lowbrow": "Which British singer-songwriter released the chart-topping albums 19, 21, 25, and 30?",
+          "answer": "Adele"
+        },
+        {
+          "highbrow": "Which fictional consulting detective first appeared in print in the 1887 novel A Study in Scarlet?",
+          "lowbrow": "Which famous detective lives at 221B Baker Street with his friend Dr. Watson?",
+          "answer": "Sherlock Holmes"
+        },
+        {
+          "highbrow": "In chemistry, what adjective describes compounds containing titanium in its +4 oxidation state, such as a certain acid?",
+          "lowbrow": "What was the name of the famous British ocean liner that sank after hitting an iceberg in 1912?",
+          "answer": "Titanic"
+        },
+        {
+          "highbrow": "Which real-life late-19th-century Birmingham street gang supposedly sewed disposable razor blades into the peaks of their flat caps?",
+          "lowbrow": "Which hit BBC drama series stars Cillian Murphy as gangster Tommy Shelby?",
+          "answer": "Peaky Blinders"
+        },
+        {
+          "highbrow": "Which central London railway terminus, opened in 1854, was designed by Isambard Kingdom Brunel?",
+          "lowbrow": "What is the name of the marmalade-loving bear from Darkest Peru?",
+          "answer": "Paddington"
+        },
+        {
+          "highbrow": "Which 12th-century English royal, daughter of King Henry I, fought King Stephen for the throne during a civil war known as The Anarchy?",
+          "lowbrow": "What is the name of the telekinetic book-loving girl in Roald Dahl's famous children's novel?",
+          "answer": "Matilda"
+        }
+      ]
+    },
+    {
+      "roundName": "Where is kazahkstan",
+      "roundType": "map",
+      "questions": [
+        {
+          "question": "Where are the band the arctic monkeys from",
+          "mapImage": "/images/ukmap.jpeg",
+          "targetX": 71.54,
+          "targetY": 71.59,
+          "answer": "Sheffield"
+        },
+        {
+          "question": "Where is the Eden project?",
+          "mapImage": "/images/ukmap.jpeg",
+          "targetX": 53.46,
+          "targetY": 93.18,
+          "answer": "Cornwall"
+        },
+        {
+          "question": "Where are the needles?",
+          "mapImage": "/images/ukmap.jpeg",
+          "targetX": 73.54,
+          "targetY": 93.18,
+          "answer": "The Isle Of Wight"
+        }
+      ]
+    },
+    {
+      "roundName": "Vowel Movement",
+      "roundType": "vowel_movement",
+      "questions": [
+        {
+          "words": [
+            "Boninumen",
+            "Sapurtod",
+            "Fluntstanos",
+            "Ciptoon Cevamon",
+            "Hi-Mon"
+          ],
+          "originalWords": [
+            "Bananaman",
+            "Superted",
+            "Flintstones",
+            "Captain Caveman",
+            "He-Man"
+          ],
+          "answer": "Cartoons"
+        },
+        {
+          "words": [
+            "Lino Luvagiud",
+            "Grapheik",
+            "Dabbou",
+            "Rin Waosluy",
+            "Horry Pattur"
+          ],
+          "originalWords": [
+            "Luna Lovegood",
+            "Griphook",
+            "Dobbie",
+            "Ron Weasley",
+            "Harry Potter"
+          ],
+          "answer": "Harry Potter Characters"
+        },
+        {
+          "words": [
+            "Arungu os tho naw bluck",
+            "Ezurk",
+            "Stringar Thongs",
+            "Brookang Bud",
+            "Buttar Cill Soel"
+          ],
+          "originalWords": [
+            "Orange is the new black",
+            "Ozark",
+            "Stranger things",
+            "Breaking Bad",
+            "Better Call Saul"
+          ],
+          "answer": "Better Call Saul"
+        }
+      ]
+    },
+    {
+      "roundName": "Correction Centre",
+      "roundType": "individual",
+      "questions": [
+        {
+          "question": "In 1912, the luxury passenger liner RMS Titanic famously sank on its maiden voyage after colliding with an avocado.",
+          "answer": "Iceberg"
+        },
+        {
+          "question": "According to legend, St. Patrick drove all the accountants out of Ireland.",
+          "answer": "Snakes"
+        },
+        {
+          "question": "In golf, scoring one stroke under par on a hole is known as a flamingo.",
+          "answer": "Birdie"
+        },
+        {
+          "question": "An umbrella is a large flightless bird native to Africa that lays the largest eggs of any living land animal.",
+          "answer": "Ostrich"
+        },
+        {
+          "question": "In Charles Dickens' A Christmas Carol, Ebenezer Scrooge is visited on Christmas Eve by three goats",
+          "answer": "Ghosts"
+        },
+        {
+          "question": "The chemical symbol for gold on the periodic table is Lol.",
+          "answer": "AU"
+        },
+        {
+          "question": "Ludwig van Beethoven composed his famous Ninth Symphony while completely invisible.",
+          "answer": "Deaf"
+        },
+        {
+          "question": "A group of lions living together in the wild is known as a wardrobe.",
+          "answer": "Pride"
+        }
+      ]
+    }
+  ]
+}

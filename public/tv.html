@@ -1,0 +1,789 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>House of Games - TV Scoreboard</title>
+  <style>
+    body {
+      background: radial-gradient(circle at center, #1e1145 0%, #0a041a 100%);
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      margin: 0;
+      padding: 25px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    h1 {
+      color: #f4d03f;
+      font-size: 42px;
+      margin: 0 0 6px 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 0 4px 15px rgba(244, 208, 63, 0.4);
+    }
+    .subtitle {
+      color: #94a3b8;
+      font-size: 18px;
+      margin-bottom: 18px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    #round-name-banner {
+      width: 100%;
+      max-width: 850px;
+      background: linear-gradient(135deg, #7c3aed 0%, #4c1d95 100%);
+      border: 3px solid #a78bfa;
+      border-radius: 20px;
+      padding: 18px 25px;
+      margin-bottom: 18px;
+      text-align: center;
+      box-shadow: 0 15px 35px rgba(124, 58, 237, 0.5);
+      display: none;
+      animation: popIn 0.3s ease-out;
+    }
+    .round-banner-label {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: #ddd6fe;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+    #round-name-text {
+      font-size: 38px;
+      font-weight: 900;
+      color: #f4d03f;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.9); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #question-banner {
+      width: 100%;
+      max-width: 850px;
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+      border: 2px solid #60a5fa;
+      border-radius: 16px;
+      padding: 20px 25px;
+      margin-bottom: 18px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.4);
+      display: none;
+    }
+    .question-label {
+      font-size: 15px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: #bfdbfe;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+    #question-text {
+      font-size: 30px;
+      font-weight: 800;
+      color: #ffffff;
+      line-height: 1.3;
+    }
+
+    /* Vowel Movement Word Tiles */
+    #tv-vm-words-container {
+      display: none;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 14px;
+      margin-top: 12px;
+    }
+    .vm-word-tile {
+      background: #0f172a;
+      border: 3px solid #f4d03f;
+      border-radius: 12px;
+      padding: 14px 24px;
+      min-width: 110px;
+      text-align: center;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.4);
+      animation: popIn 0.25s ease-out;
+    }
+    .vm-word-main {
+      font-size: 34px;
+      font-weight: 900;
+      color: #ffffff;
+      letter-spacing: 2px;
+    }
+    .vm-word-orig {
+      font-size: 18px;
+      font-weight: bold;
+      color: #4ade80;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+    .vm-word-slot-empty {
+      background: rgba(15, 23, 42, 0.4);
+      border: 2px dashed rgba(255, 255, 255, 0.25);
+      border-radius: 12px;
+      padding: 14px 24px;
+      min-width: 90px;
+      font-size: 28px;
+      font-weight: bold;
+      color: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Map Stage Styles */
+    #tv-map-wrapper {
+      position: relative;
+      display: inline-block;
+      margin: 10px auto 0 auto;
+      border: 3px solid #60a5fa;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #0f172a;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+    #tv-map-img {
+      display: block;
+      max-height: 44vh;
+      max-width: 100%;
+      width: auto;
+      height: auto;
+    }
+    #tv-map-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
+    .tv-pin {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: none;
+      animation: dropPin 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      z-index: 10;
+    }
+    @keyframes dropPin {
+      0% { transform: translate(-50%, -180%) scale(0.5); opacity: 0; }
+      100% { transform: translate(-50%, -100%) scale(1); opacity: 1; }
+    }
+    .tv-pin-label {
+      background: rgba(15, 23, 42, 0.92);
+      color: #fff;
+      font-size: 13px;
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 6px;
+      white-space: nowrap;
+      border: 2px solid #fff;
+      margin-bottom: 2px;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.6);
+    }
+    .tv-pin-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.8);
+    }
+    .tv-target-pin {
+      z-index: 20;
+    }
+    .tv-target-pin .tv-pin-label {
+      background: #f4d03f;
+      color: #000;
+      border-color: #000;
+      font-size: 15px;
+    }
+    .tv-target-pin .tv-pin-dot {
+      width: 22px;
+      height: 22px;
+      background: #f4d03f;
+      border: 3px solid #000;
+    }
+
+    #answer-banner {
+      width: 100%;
+      max-width: 850px;
+      background: linear-gradient(135deg, #059669 0%, #047857 100%);
+      border: 2px solid #34d399;
+      border-radius: 16px;
+      padding: 18px 25px;
+      margin-bottom: 18px;
+      text-align: center;
+      box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4);
+      display: none;
+    }
+    #answer-text {
+      font-size: 32px;
+      font-weight: 900;
+      color: #ffffff;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 850px;
+      background: rgba(43, 18, 76, 0.6);
+      border: 2px solid #4a154b;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+      backdrop-filter: blur(10px);
+    }
+    ul { list-style: none; padding: 0; margin: 0; }
+    li {
+      background: rgba(26, 11, 46, 0.8);
+      margin: 10px 0;
+      padding: 15px 25px;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 26px;
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+    .player-name { font-weight: bold; display: flex; align-items: center; gap: 15px; }
+    .lock-badge { font-size: 18px; background: #334155; color: #94a3b8; padding: 4px 14px; border-radius: 20px; font-weight: bold; }
+    .lock-badge.submitted { background: #22c55e; color: #fff; }
+    .player-score { color: #f4d03f; font-weight: 900; font-size: 34px; }
+    #announcement-banner {
+      margin-top: 20px; width: 100%; max-width: 850px; padding: 18px; border-radius: 12px; font-size: 26px; font-weight: bold; text-align: center; display: none; box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+    }
+    .waiting-text { color: #94a3b8; text-align: center; font-size: 24px; padding: 30px; }
+  </style>
+</head>
+<body>
+
+  <h1>🎮 House of Games</h1>
+  <div class="subtitle" id="tv-subtitle">Eyes Down for the Next Round</div>
+
+  <div id="round-name-banner">
+    <div class="round-banner-label">Now Playing</div>
+    <div id="round-name-text">ROUND NAME</div>
+  </div>
+
+  <div id="question-banner">
+    <div class="question-label" id="question-label-text">Current Clue</div>
+    <div id="question-text"></div>
+    
+    <!-- Vowel Movement Progressive Word Tiles -->
+    <div id="tv-vm-words-container"></div>
+
+    <!-- Side-by-side 2-Image Container -->
+    <div id="image-container" style="display: none; justify-content: center; align-items: center; gap: 20px; margin-top: 10px;">
+      <img id="tv-img1" src="" style="max-height: 280px; max-width: 40%; border-radius: 12px; border: 3px solid #60a5fa; object-fit: contain;" />
+      <div style="font-size: 48px; color: #f4d03f; font-weight: bold;">+</div>
+      <img id="tv-img2" src="" style="max-height: 280px; max-width: 40%; border-radius: 12px; border: 3px solid #60a5fa; object-fit: contain;" />
+    </div>
+
+    <!-- Map Pin Stage Container -->
+    <div id="tv-map-stage" style="display: none; text-align: center;">
+      <div id="tv-map-wrapper">
+        <img id="tv-map-img" src="" />
+        <svg id="tv-map-lines" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+        <div id="tv-map-pins-layer"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="answer-banner">
+    <div class="question-label">Correct Answer</div>
+    <div id="answer-text"></div>
+  </div>
+
+  <div class="container" id="main-container">
+    <ul id="tv-player-list">
+      <div class="waiting-text">Eyes down for the next round...</div>
+    </ul>
+  </div>
+
+  <div id="announcement-banner"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let currentPlayers = [];
+    let submittedIds = new Set();
+    let isSecretActive = false;
+    let isIndividualActive = false;
+    let isHLActive = false;
+    let isMapActive = false;
+    let isVMActive = false;
+    let hlTier = 'highbrow';
+    let scoresVisible = false;
+    let buzzerPrompt = '';
+    let secretPrompt = '';
+    let individualTargetName = '';
+    let revealedAnswersData = null;
+
+    function playBuzzerSound() {
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(130, ctx.currentTime);
+        gain.gain.setValueAtTime(0.4, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+        
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.5);
+      } catch (e) {}
+    }
+
+    function renderDisplay() {
+      const list = document.getElementById('tv-player-list');
+      const subtitle = document.getElementById('tv-subtitle');
+      const container = document.getElementById('main-container');
+
+      if (isMapActive || isVMActive) {
+        container.style.display = 'none';
+        return;
+      }
+
+      if (isHLActive) {
+        container.style.display = 'none';
+        subtitle.style.color = hlTier === 'highbrow' ? '#f4d03f' : '#38bdf8';
+        subtitle.innerText = `🎯 ${individualTargetName}'s Turn — ${hlTier === 'highbrow' ? '🎩 HIGHBROW (2 PTS)' : '🧢 LOWBROW (1 PT)'}`;
+        return;
+      }
+
+      if (isIndividualActive) {
+        container.style.display = 'none';
+        subtitle.style.color = '#4ade80';
+        subtitle.innerText = `🎯 Hot Seat: ${individualTargetName}'s Turn! 🎯`;
+        return;
+      }
+
+      if (scoresVisible) {
+        container.style.display = 'block';
+        subtitle.style.color = '#94a3b8';
+        subtitle.innerText = 'Current Standings';
+
+        if (currentPlayers.length === 0) {
+          list.innerHTML = '<div class="waiting-text">No players connected yet...</div>';
+          return;
+        }
+
+        const sorted = [...currentPlayers].sort((a, b) => b.score - a.score);
+        list.innerHTML = sorted.map((p, index) => {
+          let medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
+          return `
+            <li>
+              <span class="player-name"><span style="width: 40px;">${medal}</span> ${p.name}</span>
+              <span class="player-score">${p.score}</span>
+            </li>
+          `;
+        }).join('');
+
+      } else if (revealedAnswersData) {
+        container.style.display = 'block';
+        subtitle.style.color = '#94a3b8';
+        subtitle.innerText = 'Player Guesses Revealed';
+
+        list.innerHTML = revealedAnswersData.map(d => `
+          <li>
+            <span class="player-name">👤 ${d.name}</span>
+            <span style="color: #4ade80; font-weight: bold;">"${d.answer}"</span>
+          </li>
+        `).join('');
+
+      } else if (isSecretActive) {
+        container.style.display = 'block';
+        subtitle.style.color = '#94a3b8';
+        subtitle.innerText = 'Lock-In Status';
+        list.innerHTML = currentPlayers.map((p) => {
+          const hasLocked = submittedIds.has(p.id);
+          return `
+            <li>
+              <span class="player-name">👤 ${p.name}</span>
+              <span class="${hasLocked ? 'lock-badge submitted' : 'lock-badge'}">${hasLocked ? '🔒 Locked In' : '⏳ Thinking...'}</span>
+            </li>
+          `;
+        }).join('');
+
+      } else {
+        subtitle.style.color = '#94a3b8';
+        subtitle.innerText = buzzerPrompt ? 'Fingers on Buzzers!' : 'Eyes Down for the Next Round';
+        container.style.display = 'none';
+      }
+    }
+
+    socket.on('update-players', (players) => { currentPlayers = players; renderDisplay(); });
+    socket.on('scores-visibility', (visible) => { scoresVisible = visible; renderDisplay(); });
+    
+    socket.on('round-name-state', (data) => {
+      const banner = document.getElementById('round-name-banner');
+      const textEl = document.getElementById('round-name-text');
+      if (data.visible && data.name) {
+        textEl.innerText = data.name;
+        banner.style.display = 'block';
+      } else {
+        banner.style.display = 'none';
+      }
+    });
+
+    socket.on('vowel-movement-state', (data) => {
+      const qBanner = document.getElementById('question-banner');
+      const qText = document.getElementById('question-text');
+      const qLabel = document.getElementById('question-label-text');
+      const vmContainer = document.getElementById('tv-vm-words-container');
+      const imgContainer = document.getElementById('image-container');
+      const mapStage = document.getElementById('tv-map-stage');
+      const announceBanner = document.getElementById('announcement-banner');
+      const ansBanner = document.getElementById('answer-banner');
+      const subtitle = document.getElementById('tv-subtitle');
+
+      if (data && data.active) {
+        isVMActive = true;
+        isMapActive = false;
+        isSecretActive = false;
+        isIndividualActive = false;
+        isHLActive = false;
+
+        imgContainer.style.display = 'none';
+        mapStage.style.display = 'none';
+        qText.style.display = 'none';
+
+        qLabel.innerText = `🔤 What Connects These Words? (Clue ${data.revealedCount} of ${data.totalWords})`;
+        qBanner.style.display = 'block';
+
+        let tilesHtml = '';
+        for (let i = 0; i < data.totalWords; i++) {
+          if (i < data.words.length) {
+            const origWord = (data.answerRevealed && data.originalWords && data.originalWords[i])
+              ? `<div class="vm-word-orig">${data.originalWords[i]}</div>`
+              : '';
+            tilesHtml += `
+              <div class="vm-word-tile">
+                <div class="vm-word-main">${data.words[i]}</div>
+                ${origWord}
+              </div>
+            `;
+          } else {
+            tilesHtml += `<div class="vm-word-slot-empty">?</div>`;
+          }
+        }
+        vmContainer.innerHTML = tilesHtml;
+        vmContainer.style.display = 'flex';
+
+        if (data.winner && !data.answerRevealed) {
+          playBuzzerSound();
+          announceBanner.style.display = 'block';
+          announceBanner.style.background = '#22c55e';
+          announceBanner.style.color = '#fff';
+          announceBanner.innerText = `🚨 ${data.winner.toUpperCase()} BUZZED FIRST! 🚨`;
+          subtitle.style.color = '#4ade80';
+          subtitle.innerText = `${data.winner} is guessing the connection!`;
+        } else if (data.answerRevealed) {
+          announceBanner.style.display = 'none';
+          document.getElementById('answer-text').innerText = data.answer;
+          ansBanner.style.display = 'block';
+          subtitle.style.color = '#f4d03f';
+          subtitle.innerText = 'Connection Revealed!';
+        } else {
+          announceBanner.style.display = 'none';
+          ansBanner.style.display = 'none';
+          subtitle.style.color = '#f4d03f';
+          subtitle.innerText = 'Buzz in when you know the link!';
+        }
+      } else {
+        isVMActive = false;
+        vmContainer.style.display = 'none';
+        if (!isSecretActive && !isIndividualActive && !isHLActive && !isMapActive) {
+          qBanner.style.display = 'none';
+        }
+      }
+      renderDisplay();
+    });
+
+    socket.on('map-state', (data) => {
+      const qBanner = document.getElementById('question-banner');
+      const qText = document.getElementById('question-text');
+      const qLabel = document.getElementById('question-label-text');
+      const imgContainer = document.getElementById('image-container');
+      const vmContainer = document.getElementById('tv-vm-words-container');
+      const mapStage = document.getElementById('tv-map-stage');
+      const pinsLayer = document.getElementById('tv-map-pins-layer');
+      const linesSvg = document.getElementById('tv-map-lines');
+      const subtitle = document.getElementById('tv-subtitle');
+      const ansBanner = document.getElementById('answer-banner');
+
+      if (data && data.active) {
+        isMapActive = true;
+        isVMActive = false;
+        isSecretActive = false;
+        isIndividualActive = false;
+        isHLActive = false;
+
+        imgContainer.style.display = 'none';
+        vmContainer.style.display = 'none';
+        mapStage.style.display = 'block';
+        document.getElementById('tv-map-img').src = data.mapImage;
+
+        qLabel.innerText = '🗺️ Where is Kazakhstan?';
+        qText.innerText = data.prompt;
+        qText.style.display = 'block';
+        qBanner.style.display = 'block';
+
+        pinsLayer.innerHTML = '';
+        linesSvg.innerHTML = '';
+
+        if (data.pinsRevealed && data.guesses) {
+          data.guesses.forEach((g, idx) => {
+            const rankBadge = (data.answerRevealed && idx === 0) ? '🏆 ' : '';
+            const pin = document.createElement('div');
+            pin.className = 'tv-pin';
+            pin.style.left = `${g.x}%`;
+            pin.style.top = `${g.y}%`;
+            pin.innerHTML = `
+              <div class="tv-pin-label" style="border-color: ${g.color};">${rankBadge}${g.name}</div>
+              <div class="tv-pin-dot" style="background: ${g.color};"></div>
+            `;
+            pinsLayer.appendChild(pin);
+
+            if (data.answerRevealed && data.targetX !== null) {
+              const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+              line.setAttribute('x1', g.x);
+              line.setAttribute('y1', g.y);
+              line.setAttribute('x2', data.targetX);
+              line.setAttribute('y2', data.targetY);
+              line.setAttribute('stroke', idx === 0 ? '#f4d03f' : g.color);
+              line.setAttribute('stroke-width', idx === 0 ? '0.8' : '0.45');
+              line.setAttribute('stroke-dasharray', '1.5,1');
+              linesSvg.appendChild(line);
+            }
+          });
+        }
+
+        if (data.answerRevealed && data.targetX !== null) {
+          const targetPin = document.createElement('div');
+          targetPin.className = 'tv-pin tv-target-pin';
+          targetPin.style.left = `${data.targetX}%`;
+          targetPin.style.top = `${data.targetY}%`;
+          targetPin.innerHTML = `
+            <div class="tv-pin-label">🎯 ${data.answer || 'TARGET'}</div>
+            <div class="tv-pin-dot"></div>
+          `;
+          pinsLayer.appendChild(targetPin);
+
+          if (data.guesses && data.guesses.length > 0) {
+            subtitle.style.color = '#f4d03f';
+            subtitle.innerText = `🏆 Closest Guess: ${data.guesses[0].name}!`;
+          }
+        } else if (data.pinsRevealed) {
+          subtitle.style.color = '#38bdf8';
+          subtitle.innerText = '📍 Player Guesses Revealed!';
+        } else {
+          subtitle.style.color = '#4ade80';
+          subtitle.innerText = '📱 Place Your Pin on Your Phone!';
+          ansBanner.style.display = 'none';
+        }
+      } else {
+        isMapActive = false;
+        mapStage.style.display = 'none';
+        if (!isSecretActive && !isIndividualActive && !isHLActive && !isVMActive) qBanner.style.display = 'none';
+      }
+      renderDisplay();
+    });
+
+    socket.on('secret-state', (data) => {
+      isSecretActive = data.active;
+      secretPrompt = data.prompt || '';
+      
+      const qBanner = document.getElementById('question-banner');
+      const qText = document.getElementById('question-text');
+      const qLabel = document.getElementById('question-label-text');
+      const imgContainer = document.getElementById('image-container');
+      const vmContainer = document.getElementById('tv-vm-words-container');
+      const mapStage = document.getElementById('tv-map-stage');
+
+      if (data.active) {
+        isIndividualActive = false;
+        isHLActive = false;
+        isMapActive = false;
+        isVMActive = false;
+        mapStage.style.display = 'none';
+        vmContainer.style.display = 'none';
+        qLabel.innerText = 'Current Clue';
+        if (data.image1 && data.image2) {
+          qText.style.display = 'none';
+          document.getElementById('tv-img1').src = data.image1;
+          document.getElementById('tv-img2').src = data.image2;
+          imgContainer.style.display = 'flex';
+          qBanner.style.display = 'block';
+        } else if (data.prompt) {
+          imgContainer.style.display = 'none';
+          qText.innerText = data.prompt;
+          qText.style.display = 'block';
+          qBanner.style.display = 'block';
+        }
+      } else {
+        submittedIds.clear(); 
+        revealedAnswersData = null;
+        if (!isIndividualActive && !isHLActive && !isMapActive && !isVMActive) qBanner.style.display = 'none';
+        document.getElementById('answer-banner').style.display = 'none'; 
+      }
+      renderDisplay();
+    });
+
+    socket.on('individual-state', (data) => {
+      isIndividualActive = data.active;
+      individualTargetName = data.targetName || '';
+      
+      const qBanner = document.getElementById('question-banner');
+      const qText = document.getElementById('question-text');
+      const qLabel = document.getElementById('question-label-text');
+      const imgContainer = document.getElementById('image-container');
+      const vmContainer = document.getElementById('tv-vm-words-container');
+      const mapStage = document.getElementById('tv-map-stage');
+
+      if (data.active) {
+        isSecretActive = false;
+        isHLActive = false;
+        isMapActive = false;
+        isVMActive = false;
+        mapStage.style.display = 'none';
+        vmContainer.style.display = 'none';
+        qLabel.innerText = `Question for ${data.targetName}`;
+        if (data.image1 && data.image2) {
+          qText.style.display = 'none';
+          document.getElementById('tv-img1').src = data.image1;
+          document.getElementById('tv-img2').src = data.image2;
+          imgContainer.style.display = 'flex';
+          qBanner.style.display = 'block';
+        } else if (data.prompt) {
+          imgContainer.style.display = 'none';
+          qText.innerText = data.prompt;
+          qText.style.display = 'block';
+          qBanner.style.display = 'block';
+        }
+      } else if (!isSecretActive && !isHLActive && !isMapActive && !isVMActive) {
+        qBanner.style.display = 'none';
+      }
+      renderDisplay();
+    });
+
+    socket.on('highbrow-lowbrow-state', (data) => {
+      const qBanner = document.getElementById('question-banner');
+      const qText = document.getElementById('question-text');
+      const qLabel = document.getElementById('question-label-text');
+      const imgContainer = document.getElementById('image-container');
+      const vmContainer = document.getElementById('tv-vm-words-container');
+      const mapStage = document.getElementById('tv-map-stage');
+
+      if (data && data.active) {
+        isHLActive = true;
+        isSecretActive = false;
+        isIndividualActive = false;
+        isMapActive = false;
+        isVMActive = false;
+        hlTier = data.tier;
+        individualTargetName = data.targetName;
+
+        imgContainer.style.display = 'none';
+        vmContainer.style.display = 'none';
+        mapStage.style.display = 'none';
+        qLabel.innerText = data.tier === 'highbrow' 
+          ? `🎩 HIGHBROW (2 POINTS) — FOR ${data.targetName.toUpperCase()}` 
+          : `🧢 LOWBROW (1 POINT) — FOR ${data.targetName.toUpperCase()}`;
+        qText.innerText = data.prompt;
+        qText.style.display = 'block';
+        qBanner.style.display = 'block';
+      } else {
+        isHLActive = false;
+        if (!isSecretActive && !isIndividualActive && !isMapActive && !isVMActive) qBanner.style.display = 'none';
+      }
+      renderDisplay();
+    });
+
+    socket.on('submissions-update', (summary) => {
+      submittedIds = new Set(summary.filter(s => s.hasSubmitted).map(s => s.id));
+      renderDisplay();
+    });
+
+    socket.on('buzzer-state', (data) => {
+      if (isVMActive) return;
+      buzzerPrompt = data.prompt || '';
+      const banner = document.getElementById('announcement-banner');
+      const qBanner = document.getElementById('question-banner');
+      const qText = document.getElementById('question-text');
+      const qLabel = document.getElementById('question-label-text');
+      const imgContainer = document.getElementById('image-container');
+      const vmContainer = document.getElementById('tv-vm-words-container');
+      const mapStage = document.getElementById('tv-map-stage');
+
+      if (data.active || data.prompt) {
+        isIndividualActive = false;
+        isSecretActive = false;
+        isHLActive = false;
+        isMapActive = false;
+        mapStage.style.display = 'none';
+        vmContainer.style.display = 'none';
+        qLabel.innerText = 'Current Clue';
+      }
+
+      if (data.image1 && data.image2) {
+        qText.style.display = 'none';
+        document.getElementById('tv-img1').src = data.image1;
+        document.getElementById('tv-img2').src = data.image2;
+        imgContainer.style.display = 'flex';
+        qBanner.style.display = 'block';
+      } else if (data.prompt) {
+        imgContainer.style.display = 'none';
+        qText.innerText = data.prompt;
+        qText.style.display = 'block';
+        qBanner.style.display = 'block';
+      } else if (!data.active && !data.prompt && !isSecretActive && !isIndividualActive && !isHLActive && !isMapActive && !isVMActive) {
+        qBanner.style.display = 'none';
+      }
+
+      if (data.winner) {
+        playBuzzerSound();
+        banner.style.display = 'block';
+        banner.style.background = '#22c55e';
+        banner.style.color = '#fff';
+        banner.innerText = `🚨 ${data.winner.toUpperCase()} BUZZED FIRST! 🚨`;
+      } else if (data.active) {
+        banner.style.display = 'block';
+        banner.style.background = '#eab308';
+        banner.style.color = '#000';
+        banner.innerText = '⚡ BUZZERS ARE LIVE! ⚡';
+      } else {
+        banner.style.display = 'none';
+        if (!data.prompt) { 
+          revealedAnswersData = null;
+          document.getElementById('answer-banner').style.display = 'none'; 
+        }
+      }
+      renderDisplay();
+    });
+
+    socket.on('answers-revealed', (data) => {
+      revealedAnswersData = data;
+      renderDisplay();
+    });
+
+    socket.on('correct-answer-reveal', (answer) => {
+      document.getElementById('answer-text').innerText = answer;
+      document.getElementById('answer-banner').style.display = 'block';
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>House of Games - Host Admin</title>
+  <style>
+    body {
+      background: #0f172a;
+      color: #ffffff;
+      font-family: sans-serif;
+      padding: 30px;
+    }
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 640px;
+    }
+    h1 { color: #38bdf8; margin: 0; }
+    .nav-link {
+      color: #f4d03f;
+      text-decoration: none;
+      font-weight: bold;
+      background: #1e293b;
+      padding: 10px 14px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+      font-size: 14px;
+    }
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 12px;
+      max-width: 600px;
+      margin-top: 20px;
+    }
+    .btn {
+      padding: 12px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-right: 8px;
+      margin-top: 10px;
+    }
+    .btn-green { background: #22c55e; color: white; }
+    .btn-red { background: #ef4444; color: white; }
+    .btn-blue { background: #3b82f6; color: white; }
+    .btn-purple { background: #8b5cf6; color: white; }
+    .btn-yellow { background: #eab308; color: #000; }
+    .btn-indigo { background: #6366f1; color: white; }
+    .btn-amber { background: #f59e0b; color: #000; }
+    .btn-cyan { background: #06b6d4; color: #000; }
+    .btn-pink { background: #ec4899; color: #fff; }
+    .btn:hover { opacity: 0.9; }
+    select, input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 6px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #fff;
+      box-sizing: border-box;
+      margin-top: 6px;
+      margin-bottom: 12px;
+    }
+    ul { list-style: none; padding: 0; }
+    li {
+      background: #334155;
+      margin: 8px 0;
+      padding: 12px 16px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 18px;
+    }
+    .score-controls button {
+      padding: 6px 12px;
+      font-size: 14px;
+      font-weight: bold;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-left: 5px;
+    }
+    .btn-plus { background: #22c55e; color: white; }
+    .btn-minus { background: #ef4444; color: white; }
+    #winner-banner {
+      background: #3b82f6;
+      padding: 15px;
+      border-radius: 8px;
+      font-size: 20px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 15px;
+      display: none;
+    }
+    .admin-answer-box {
+      background: #064e3b;
+      border: 1px solid #10b981;
+      padding: 12px;
+      border-radius: 8px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      display: none;
+    }
+    .reveal-box {
+      background: #0f172a;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      border: 1px solid #334155;
+    }
+    .set-selector-box {
+      background: #0f172a;
+      padding: 12px;
+      border-radius: 8px;
+      border: 1px solid #f4d03f;
+      margin-bottom: 16px;
+    }
+    .hl-control-box {
+      background: #2e1065;
+      border: 2px solid #a855f7;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+      display: none;
+    }
+    .map-control-box {
+      background: #083344;
+      border: 2px solid #06b6d4;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+      display: none;
+    }
+    .vm-control-box {
+      background: #500724;
+      border: 2px solid #ec4899;
+      padding: 15px;
+      border-radius: 10px;
+      margin-top: 15px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="top-bar">
+    <h1>👑 Host Control Panel</h1>
+    <a href="/editor.html" class="nav-link">📝 Edit Question Sets</a>
+  </div>
+
+  <!-- TV DISPLAY CONTROLS -->
+  <div class="card">
+    <h3>TV Screen Controls</h3>
+    <button class="btn btn-purple" onclick="toggleScores(true)">📊 Show Standings on TV</button>
+    <button class="btn btn-red" onclick="toggleScores(false)">🙈 Hide Standings on TV</button>
+    <div style="margin-top: 10px;">
+      <button class="btn btn-indigo" onclick="toggleRoundName(true)">🏷️ Show Round Banner</button>
+      <button class="btn btn-red" onclick="toggleRoundName(false)">🙈 Hide Round Banner</button>
+    </div>
+    <div style="margin-top: 10px; border-top: 1px solid #334155; padding-top: 10px;">
+      <button class="btn btn-red" onclick="confirmResetScores()">🔄 Reset All Scores to 0</button>
+    </div>
+  </div>
+
+  <!-- QUESTION BANK LAUNCHER -->
+  <div class="card">
+    <h3>Question Bank Launcher</h3>
+
+    <div class="set-selector-box">
+      <label style="color: #f4d03f; font-weight: bold;">📁 Active Question Set / Theme:</label>
+      <select id="question-set-select" onchange="changeQuestionSet()" style="margin-bottom: 0;">
+        <option value="">Loading sets...</option>
+      </select>
+    </div>
+    
+    <label>Select Round:</label>
+    <select id="round-select" onchange="updateQuestionDropdown()">
+      <option value="">-- Choose Round --</option>
+    </select>
+    
+    <button class="btn btn-indigo" style="width: 100%; margin-bottom: 15px;" onclick="showRoundNameOnly()">📢 Show Round Name on TV (Intro)</button>
+
+    <label>Select Question / Clue:</label>
+    <select id="question-select" onchange="previewQuestion()">
+      <option value="">-- Choose Question --</option>
+    </select>
+
+    <!-- Target Player Dropdown -->
+    <div style="margin-top: 15px; background: #0f172a; padding: 12px; border-radius: 8px; border: 1px solid #334155;">
+      <label style="color: #38bdf8; font-weight: bold;">Target Player (Individual & Highbrow/Lowbrow):</label>
+      <select id="target-player-select" style="margin-bottom: 0;">
+        <option value="">-- Choose Player --</option>
+      </select>
+    </div>
+
+    <!-- Host Private Answer Preview -->
+    <div id="admin-answer-preview" class="admin-answer-box">
+      <div><strong>🔑 Correct Answer (Host Only):</strong> <span id="preview-answer-text"></span></div>
+      <div id="preview-hl-details" style="margin-top: 8px; font-size: 14px; color: #a7f3d0; display: none;">
+        <div>🎩 <strong>Highbrow (2 pts):</strong> <span id="prev-hb-text"></span></div>
+        <div style="margin-top: 4px;">🧢 <strong>Lowbrow (1 pt):</strong> <span id="prev-lb-text"></span></div>
+      </div>
+      <div id="preview-map-details" style="margin-top: 8px; font-size: 14px; color: #67e8f9; display: none;">
+        🗺️ <strong>Map Image:</strong> <span id="prev-map-path"></span> (Target: <span id="prev-map-coords"></span>)
+      </div>
+      <div id="preview-vm-details" style="margin-top: 8px; font-size: 14px; color: #fbcfe8; display: none;">
+        <div>🔤 <strong>Altered Words:</strong> <span id="prev-vm-words"></span></div>
+        <div style="margin-top: 4px;">✅ <strong>Original Words:</strong> <span id="prev-vm-orig"></span></div>
+      </div>
+      <div id="admin-image-preview" style="margin-top: 10px; display: none; gap: 10px; align-items: center;">
+        <img id="prev-img1" src="" style="max-height: 80px; border-radius: 4px;" />
+        <span>+</span>
+        <img id="prev-img2" src="" style="max-height: 80px; border-radius: 4px;" />
+      </div>
+    </div>
+
+    <!-- Launch Buttons -->
+    <div style="margin-top: 15px;">
+      <button class="btn btn-green" onclick="launchSelectedQuestion('buzzer')">🚨 Launch Buzzer</button>
+      <button class="btn btn-blue" onclick="launchSelectedQuestion('secret')">🔒 Launch Secret</button>
+      <button class="btn btn-purple" onclick="launchSelectedQuestion('individual')">👤 Launch Individual</button>
+      <button class="btn btn-amber" onclick="launchSelectedQuestion('highbrow_lowbrow')">🎩 Highbrow/Lowbrow</button>
+      <button class="btn btn-cyan" onclick="launchSelectedQuestion('map')">🗺️ Launch Map Pin</button>
+      <button class="btn btn-pink" onclick="launchSelectedQuestion('vowel_movement')">🔤 Vowel Movement</button>
+    </div>
+
+    <!-- Active Vowel Movement Live Controls -->
+    <div id="vm-live-controls" class="vm-control-box">
+      <div style="font-weight: bold; color: #fbcfe8; margin-bottom: 6px;">
+        🔤 Vowel Movement — Showing <span id="vm-progress-text" style="color: #f4d03f;">1 / 5</span> Words
+      </div>
+      <div id="vm-shown-words-list" style="font-size: 15px; color: #fff; background: #0f172a; padding: 8px 12px; border-radius: 6px; margin-bottom: 10px;"></div>
+      
+      <div id="vm-winner-box" style="display: none; background: #14532d; border: 1px solid #22c55e; padding: 10px; border-radius: 8px; margin-bottom: 10px;">
+        <div style="font-weight: bold; color: #4ade80; margin-bottom: 6px;" id="vm-winner-name"></div>
+        <button class="btn btn-green btn-sm" onclick="awardVMPoint()">✅ Correct! Award +1 Pt & Reveal</button>
+        <button class="btn btn-red btn-sm" onclick="reopenVMBuzzer()">❌ Wrong! Re-open Buzzers</button>
+      </div>
+
+      <div>
+        <button id="btn-next-vm-word" class="btn btn-blue" onclick="nextVowelWord()">➡️ Reveal Next Word</button>
+        <button class="btn btn-yellow" onclick="revealVMAnswer()">📢 Reveal Answer & Original Words</button>
+      </div>
+    </div>
+
+    <!-- Active Highbrow / Lowbrow Live Controls -->
+    <div id="hl-live-controls" class="hl-control-box">
+      <div style="font-weight: bold; color: #e9d5ff; margin-bottom: 8px;">
+        🎭 Active Highbrow / Lowbrow: <span id="hl-active-player" style="color: #f4d03f;"></span> 
+        (<span id="hl-active-tier">HIGHBROW - 2 PTS</span>)
+      </div>
+      <button id="btn-step-lowbrow" class="btn btn-yellow" onclick="switchToLowbrow()">⬇️ Wrong! Switch to Lowbrow (1 Pt)</button>
+      <button id="btn-award-hl" class="btn btn-green" onclick="awardHLPoints()">✅ Correct! Award Points</button>
+    </div>
+
+    <!-- Active Map Round Live Controls -->
+    <div id="map-live-controls" class="map-control-box">
+      <div style="font-weight: bold; color: #cffafe; margin-bottom: 8px;">
+        🗺️ Where is Kazakhstan? — Pin Drop Status
+      </div>
+      <div id="map-all-locked" style="background: #22c55e; color: #fff; padding: 8px; border-radius: 6px; font-weight: bold; text-align: center; margin-bottom: 10px; display: none;">
+        🚨 ALL PLAYERS HAVE DROPPED THEIR PINS! 🚨
+      </div>
+      <ul id="map-status-list" style="margin-bottom: 10px;"></ul>
+      <div>
+        <button class="btn btn-blue" onclick="revealMapPins()">📍 1. Reveal Player Pins on TV</button>
+        <button class="btn btn-yellow" onclick="revealMapAnswer()">🎯 2. Reveal Target & Closest Winner</button>
+      </div>
+      <div id="map-closest-winner-box" style="margin-top: 12px; display: none; background: #0f172a; padding: 10px; border-radius: 8px; border: 1px solid #f4d03f;">
+        <div style="color: #f4d03f; font-weight: bold; margin-bottom: 6px;" id="map-closest-text"></div>
+        <button class="btn btn-green btn-sm" id="btn-award-map-winner" onclick="awardMapWinner()">🏆 Award +1 Pt to Closest</button>
+      </div>
+    </div>
+
+    <div style="margin-top: 15px; border-top: 1px solid #334155; padding-top: 15px;">
+      <button class="btn btn-yellow" onclick="showAnswerToAll()">📢 Show Correct Answer on TV/Phones</button>
+      <button class="btn btn-red" onclick="resetBuzzers()">Clear Active Round</button>
+    </div>
+  </div>
+
+  <!-- BUZZER STATUS -->
+  <div class="card">
+    <h3>Buzzer Status</h3>
+    <div id="winner-banner">No buzz yet</div>
+  </div>
+
+  <!-- SECRET ROUND SUBMISSIONS -->
+  <div class="card">
+    <h3>Secret Input Round Status</h3>
+    <div id="all-locked-banner" style="background: #22c55e; color: #fff; padding: 12px; border-radius: 8px; font-weight: bold; text-align: center; margin-bottom: 12px; display: none;">
+      🚨 ALL PLAYERS LOCKED IN! 🚨
+    </div>
+    <button class="btn btn-blue" onclick="revealAnswers()">Reveal Player Answers (Admin & TV)</button>
+    <div class="reveal-box">
+      <ul id="submissions-status-list" style="margin-top: 10px;">
+        <p style="color: #94a3b8; font-size: 14px;">Round not active.</p>
+      </ul>
+    </div>
+  </div>
+  
+  <!-- PLAYERS & SCORES -->
+  <div class="card">
+    <h3>Connected Players (<span id="player-count">0</span>)</h3>
+    <ul id="player-list">
+      <p style="color: #94a3b8;">Waiting for players to join...</p>
+    </ul>
+  </div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    let questionBank = { rounds: [] };
+    let activeQuestionData = { prompt: '', highbrow: '', lowbrow: '', mapImage: '', targetX: 50, targetY: 50, words: [], originalWords: [], answer: '', roundName: '', image1: '', image2: '' };
+    let currentHLState = { active: false, targetId: null, tier: 'highbrow' };
+    let currentVMWinnerId = null;
+    let closestMapWinnerId = null;
+
+    function formatSetName(filename) {
+      return filename
+        .replace(/\.json$/i, '')
+        .replace(/[_-]+/g, ' ')
+        .replace(/\b\w/g, char => char.toUpperCase());
+    }
+
+    socket.on('question-sets-list', ({ sets, current }) => {
+      const setSelect = document.getElementById('question-set-select');
+      if (!sets || sets.length === 0) {
+        setSelect.innerHTML = '<option value="">No .json files found in /questions</option>';
+        return;
+      }
+      setSelect.innerHTML = sets.map(file => 
+        `<option value="${file}" ${file === current ? 'selected' : ''}>${formatSetName(file)} (${file})</option>`
+      ).join('');
+    });
+
+    function changeQuestionSet() {
+      const selectedFile = document.getElementById('question-set-select').value;
+      if (selectedFile) {
+        socket.emit('select-question-set', selectedFile);
+      }
+    }
+
+    socket.on('question-bank', (data) => {
+      questionBank = data;
+      const roundSelect = document.getElementById('round-select');
+      const qSelect = document.getElementById('question-select');
+      
+      document.getElementById('admin-answer-preview').style.display = 'none';
+      activeQuestionData = { prompt: '', highbrow: '', lowbrow: '', mapImage: '', targetX: 50, targetY: 50, words: [], originalWords: [], answer: '', roundName: '', image1: '', image2: '' };
+      qSelect.innerHTML = '<option value="">-- Choose Question --</option>';
+
+      roundSelect.innerHTML = '<option value="">-- Choose Round --</option>' + 
+        (data.rounds || []).map((r, index) => `<option value="${index}">${r.roundName} (${r.roundType})</option>`).join('');
+    });
+
+    function updateQuestionDropdown() {
+      const roundIndex = document.getElementById('round-select').value;
+      const qSelect = document.getElementById('question-select');
+      document.getElementById('admin-answer-preview').style.display = 'none';
+
+      if (roundIndex === '') {
+        qSelect.innerHTML = '<option value="">-- Choose Question --</option>';
+        return;
+      }
+
+      const round = questionBank.rounds[roundIndex];
+      qSelect.innerHTML = '<option value="">-- Choose Question --</option>' + 
+        round.questions.map((q, qIndex) => {
+          let label = '';
+          if (q.words && q.words.length > 0) {
+            label = `[Vowel] ${q.words.join(', ')} (${q.answer})`;
+          } else if (q.mapImage) {
+            label = `[Map] ${q.question || q.answer}`;
+          } else if (q.highbrow) {
+            label = `[HB/LB] ${q.highbrow}`;
+          } else {
+            label = q.question || `Image Clue #${qIndex + 1} (${q.image1} & ${q.image2})`;
+          }
+          return `<option value="${qIndex}">${label}</option>`;
+        }).join('');
+    }
+
+    function previewQuestion() {
+      const roundIndex = document.getElementById('round-select').value;
+      const qIndex = document.getElementById('question-select').value;
+      const previewBox = document.getElementById('admin-answer-preview');
+      const previewText = document.getElementById('preview-answer-text');
+      const imgPreviewBox = document.getElementById('admin-image-preview');
+      const hlDetailsBox = document.getElementById('preview-hl-details');
+      const mapDetailsBox = document.getElementById('preview-map-details');
+      const vmDetailsBox = document.getElementById('preview-vm-details');
+
+      if (roundIndex !== '' && qIndex !== '') {
+        const roundObj = questionBank.rounds[roundIndex];
+        const qObj = roundObj.questions[qIndex];
+        
+        activeQuestionData = { 
+          prompt: qObj.question || '', 
+          highbrow: qObj.highbrow || qObj.question || '',
+          lowbrow: qObj.lowbrow || '',
+          mapImage: qObj.mapImage || '',
+          targetX: qObj.targetX !== undefined ? qObj.targetX : 50,
+          targetY: qObj.targetY !== undefined ? qObj.targetY : 50,
+          words: qObj.words || [],
+          originalWords: qObj.originalWords || [],
+          answer: qObj.answer, 
+          roundName: roundObj.roundName,
+          image1: qObj.image1 || '',
+          image2: qObj.image2 || ''
+        };
+
+        previewText.innerText = qObj.answer;
+
+        if (qObj.words && qObj.words.length > 0) {
+          document.getElementById('prev-vm-words').innerText = qObj.words.join(' → ');
+          document.getElementById('prev-vm-orig').innerText = (qObj.originalWords || []).join(', ');
+          vmDetailsBox.style.display = 'block';
+        } else {
+          vmDetailsBox.style.display = 'none';
+        }
+
+        if (qObj.mapImage) {
+          document.getElementById('prev-map-path').innerText = qObj.mapImage;
+          document.getElementById('prev-map-coords').innerText = `${activeQuestionData.targetX}%, ${activeQuestionData.targetY}%`;
+          mapDetailsBox.style.display = 'block';
+        } else {
+          mapDetailsBox.style.display = 'none';
+        }
+
+        if (qObj.highbrow || qObj.lowbrow) {
+          document.getElementById('prev-hb-text').innerText = qObj.highbrow || '';
+          document.getElementById('prev-lb-text').innerText = qObj.lowbrow || '(No lowbrow clue set)';
+          hlDetailsBox.style.display = 'block';
+        } else {
+          hlDetailsBox.style.display = 'none';
+        }
+
+        if (qObj.image1 && qObj.image2) {
+          document.getElementById('prev-img1').src = qObj.image1;
+          document.getElementById('prev-img2').src = qObj.image2;
+          imgPreviewBox.style.display = 'flex';
+        } else {
+          imgPreviewBox.style.display = 'none';
+        }
+
+        previewBox.style.display = 'block';
+      } else {
+        previewBox.style.display = 'none';
+        activeQuestionData = { prompt: '', highbrow: '', lowbrow: '', mapImage: '', targetX: 50, targetY: 50, words: [], originalWords: [], answer: '', roundName: '', image1: '', image2: '' };
+      }
+    }
+
+    function showRoundNameOnly() {
+      const roundIndex = document.getElementById('round-select').value;
+      if (roundIndex === '') {
+        alert('Please select a round from the dropdown first!');
+        return;
+      }
+      const roundObj = questionBank.rounds[roundIndex];
+      socket.emit('show-round-name-only', roundObj.roundName);
+    }
+
+    function launchSelectedQuestion(type) {
+      if (!activeQuestionData.prompt && !activeQuestionData.highbrow && !activeQuestionData.image1 && !activeQuestionData.mapImage && (!activeQuestionData.words || activeQuestionData.words.length === 0)) {
+        alert('Please select a question or clue from the dropdown first!');
+        return;
+      }
+
+      if (type === 'buzzer') {
+        socket.emit('open-buzzer-question', activeQuestionData);
+      } else if (type === 'secret') {
+        socket.emit('start-secret-question', activeQuestionData);
+      } else if (type === 'individual') {
+        const playerId = document.getElementById('target-player-select').value;
+        if (!playerId) {
+          alert('Please select a target player from the dropdown above!');
+          return;
+        }
+        socket.emit('open-individual-question', { ...activeQuestionData, playerId });
+      } else if (type === 'highbrow_lowbrow') {
+        const playerId = document.getElementById('target-player-select').value;
+        if (!playerId) {
+          alert('Please select a target player from the dropdown above!');
+          return;
+        }
+        socket.emit('open-highbrow-lowbrow', {
+          highbrow: activeQuestionData.highbrow,
+          lowbrow: activeQuestionData.lowbrow,
+          answer: activeQuestionData.answer,
+          roundName: activeQuestionData.roundName,
+          playerId
+        });
+      } else if (type === 'map') {
+        if (!activeQuestionData.mapImage) {
+          alert('This question does not have a map image attached! Choose a Map Pin clue.');
+          return;
+        }
+        socket.emit('open-map-question', {
+          prompt: activeQuestionData.prompt,
+          mapImage: activeQuestionData.mapImage,
+          targetX: activeQuestionData.targetX,
+          targetY: activeQuestionData.targetY,
+          answer: activeQuestionData.answer,
+          roundName: activeQuestionData.roundName
+        });
+      } else if (type === 'vowel_movement') {
+        if (!activeQuestionData.words || activeQuestionData.words.length === 0) {
+          alert('This question does not have Vowel Movement words! Choose a Vowel Movement clue.');
+          return;
+        }
+        socket.emit('open-vowel-movement', {
+          words: activeQuestionData.words,
+          originalWords: activeQuestionData.originalWords,
+          answer: activeQuestionData.answer,
+          roundName: activeQuestionData.roundName
+        });
+      }
+    }
+
+    function nextVowelWord() { socket.emit('next-vowel-word'); }
+    function reopenVMBuzzer() { socket.emit('reopen-vm-buzzer'); }
+    function revealVMAnswer() { socket.emit('reveal-vm-answer'); }
+
+    function awardVMPoint() {
+      if (currentVMWinnerId) {
+        socket.emit('update-score', { playerId: currentVMWinnerId, delta: 1 });
+        socket.emit('reveal-vm-answer');
+      }
+    }
+
+    function switchToLowbrow() { socket.emit('switch-to-lowbrow'); }
+    function revealMapPins() { socket.emit('reveal-map-pins'); }
+    function revealMapAnswer() { socket.emit('reveal-map-answer'); }
+
+    function awardMapWinner() {
+      if (closestMapWinnerId) {
+        socket.emit('update-score', { playerId: closestMapWinnerId, delta: 1 });
+      }
+    }
+
+    function awardHLPoints() {
+      if (!currentHLState.active || !currentHLState.targetId) return;
+      const pts = currentHLState.tier === 'highbrow' ? 2 : 1;
+      socket.emit('update-score', { playerId: currentHLState.targetId, delta: pts });
+      socket.emit('show-correct-answer');
+    }
+
+    function showAnswerToAll() {
+      if (!activeQuestionData.answer) {
+        alert('No active question or answer selected!');
+        return;
+      }
+      socket.emit('show-correct-answer');
+    }
+
+    function resetBuzzers() { socket.emit('reset-buzzers'); }
+    function adjustScore(playerId, delta) { socket.emit('update-score', { playerId, delta }); }
+    function toggleScores(visible) { socket.emit('toggle-scores', visible); }
+    function toggleRoundName(visible) { socket.emit('toggle-round-name', visible); }
+    function revealAnswers() { socket.emit('reveal-answers'); }
+
+    function confirmResetScores() {
+      if (confirm('Are you sure you want to reset all player scores back to 0?')) {
+        socket.emit('reset-scores');
+      }
+    }
+
+    socket.on('vowel-movement-state', (data) => {
+      const box = document.getElementById('vm-live-controls');
+      const winnerBox = document.getElementById('vm-winner-box');
+      const nextBtn = document.getElementById('btn-next-vm-word');
+
+      if (data && data.active) {
+        box.style.display = 'block';
+        document.getElementById('vm-progress-text').innerText = `${data.revealedCount} / ${data.totalWords}`;
+        document.getElementById('vm-shown-words-list').innerText = `Currently Visible: ${(data.words || []).join('  •  ')}`;
+
+        nextBtn.style.display = (data.revealedCount < data.totalWords && !data.answerRevealed) ? 'inline-block' : 'none';
+
+        if (data.winner && !data.answerRevealed) {
+          currentVMWinnerId = data.winnerId;
+          document.getElementById('vm-winner-name').innerText = `🚨 ${data.winner} BUZZED IN!`;
+          winnerBox.style.display = 'block';
+        } else {
+          currentVMWinnerId = null;
+          winnerBox.style.display = 'none';
+        }
+      } else {
+        currentVMWinnerId = null;
+        box.style.display = 'none';
+      }
+    });
+
+    socket.on('map-state', (data) => {
+      const box = document.getElementById('map-live-controls');
+      const winnerBox = document.getElementById('map-closest-winner-box');
+      if (data && data.active) {
+        box.style.display = 'block';
+        if (data.answerRevealed && data.guesses && data.guesses.length > 0) {
+          const winner = data.guesses[0];
+          closestMapWinnerId = winner.id;
+          document.getElementById('map-closest-text').innerText = `🥇 Closest: ${winner.name} (Distance: ${winner.distance})`;
+          winnerBox.style.display = 'block';
+        } else {
+          closestMapWinnerId = null;
+          winnerBox.style.display = 'none';
+        }
+      } else {
+        box.style.display = 'none';
+        winnerBox.style.display = 'none';
+      }
+    });
+
+    socket.on('map-submissions-update', (data) => {
+      const list = document.getElementById('map-status-list');
+      const lockedBanner = document.getElementById('map-all-locked');
+      const subs = data.submissions || [];
+      lockedBanner.style.display = data.allLocked ? 'block' : 'none';
+      list.innerHTML = subs.map(s => `
+        <li style="font-size: 15px; padding: 8px 12px;">
+          <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${s.color};margin-right:8px;"></span>${s.name}</span>
+          <span>${s.hasSubmitted ? '📍 Pin Placed' : '⏳ Choosing...'}</span>
+        </li>
+      `).join('');
+    });
+
+    socket.on('highbrow-lowbrow-state', (data) => {
+      const box = document.getElementById('hl-live-controls');
+      if (data && data.active) {
+        currentHLState = { active: true, targetId: data.targetId, tier: data.tier };
+        box.style.display = 'block';
+        document.getElementById('hl-active-player').innerText = data.targetName;
+        
+        const isHB = data.tier === 'highbrow';
+        document.getElementById('hl-active-tier').innerText = isHB ? 'HIGHBROW — 2 PTS' : 'LOWBROW — 1 PT';
+        document.getElementById('btn-step-lowbrow').style.display = isHB ? 'inline-block' : 'none';
+        document.getElementById('btn-award-hl').innerText = isHB ? '✅ Correct! Award +2 Pts' : '✅ Correct! Award +1 Pt';
+      } else {
+        currentHLState = { active: false, targetId: null, tier: 'highbrow' };
+        box.style.display = 'none';
+      }
+    });
+
+    socket.on('update-players', (players) => {
+      document.getElementById('player-count').innerText = players.length;
+      
+      const targetSelect = document.getElementById('target-player-select');
+      const currentSelected = targetSelect.value;
+      targetSelect.innerHTML = '<option value="">-- Choose Player --</option>' + 
+        players.map(p => `<option value="${p.id}">${p.name}</option>`).join('');
+      targetSelect.value = currentSelected;
+
+      const list = document.getElementById('player-list');
+      if (players.length === 0) {
+        list.innerHTML = '<p style="color: #94a3b8;">Waiting for players to join...</p>';
+        return;
+      }
+
+      list.innerHTML = players.map(p => `
+        <li>
+          <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:${p.color || '#38bdf8'};margin-right:8px;"></span><strong>${p.name}</strong> — Score: <strong>${p.score}</strong></span>
+          <div class="score-controls">
+            <button class="btn-minus" onclick="adjustScore('${p.id}', -1)">-1</button>
+            <button class="btn-plus" onclick="adjustScore('${p.id}', 1)">+1</button>
+            <button class="btn-plus" onclick="adjustScore('${p.id}', 2)">+2</button>
+            <button class="btn-plus" onclick="adjustScore('${p.id}', 5)">+5</button>
+          </div>
+        </li>
+      `).join('');
+    });
+
+    socket.on('submissions-update', (data) => {
+      const list = document.getElementById('submissions-status-list');
+      const lockedBanner = document.getElementById('all-locked-banner');
+      
+      const submissions = data.submissions || [];
+      const allLocked = data.allLocked || false;
+
+      if (submissions.length === 0) {
+        list.innerHTML = '<p style="color: #94a3b8; font-size: 14px;">No players connected.</p>';
+        lockedBanner.style.display = 'none';
+        return;
+      }
+
+      lockedBanner.style.display = allLocked ? 'block' : 'none';
+
+      list.innerHTML = submissions.map(s => `
+        <li style="font-size: 15px; padding: 8px 12px;">
+          <span>${s.name}</span>
+          <span>${s.hasSubmitted ? '🔒 Locked In' : '⏳ Typing...'}</span>
+        </li>
+      `).join('');
+    });
+
+    socket.on('answers-revealed', (data) => {
+      const list = document.getElementById('submissions-status-list');
+      if (!data) {
+        list.innerHTML = '<p style="color: #94a3b8; font-size: 14px;">Round not active.</p>';
+        return;
+      }
+      list.innerHTML = '<strong style="color: #f4d03f;">Player Answers:</strong>' + data.map(d => `
+        <li style="font-size: 16px; padding: 10px 12px; margin-top: 6px;">
+          <span><strong>${d.name}</strong></span>
+          <span style="color: #4ade80;">"${d.answer}"</span>
+        </li>
+      `).join('');
+    });
+
+    socket.on('buzzer-state', (data) => {
+      const banner = document.getElementById('winner-banner');
+      if (data.winner) {
+        banner.style.display = 'block';
+        banner.style.background = '#22c55e';
+        banner.innerText = `🚨 ${data.winner} BUZZED FIRST! 🚨`;
+      } else if (data.active) {
+        banner.style.display = 'block';
+        banner.style.background = '#eab308';
+        banner.style.color = '#000';
+        banner.innerText = '⚡ Buzzers are LIVE!';
+      } else {
+        banner.style.display = 'none';
+      }
+    });
+  </script>
+</body>
+</html>

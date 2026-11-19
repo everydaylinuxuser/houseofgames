@@ -1,0 +1,488 @@
+{
+  "rounds": [
+    {
+      "roundName": "Rhyme Time",
+      "roundType": "buzzer",
+      "questions": [
+        {
+          "image1": "/images/britneyspears.jpeg",
+          "image2": "/images/whitneyhouston.jpeg",
+          "answer": "Britney Whitney"
+        },
+        {
+          "image1": "/images/comb.jpeg",
+          "image2": "/images/jerome.jpeg",
+          "answer": "Comb Jerome"
+        }
+      ]
+    },
+    {
+      "roundName": "Distinctly Average",
+      "roundType": "secret",
+      "questions": [
+        {
+          "question": "According to wikipedia, how many mince pies were eaten in the UK in 2025",
+          "answer": "175 million"
+        },
+        {
+          "question": "How many gifts are given altogether in the 12 days of Christmas",
+          "answer": "364"
+        },
+        {
+          "question": "How many weeks has Mariah Carey's All I want For Christmas spent in the UK chart up until January 2025",
+          "answer": "140"
+        },
+        {
+          "question": "How many lights were switched on simultaneously on the world's most illuminated Christmas tree",
+          "answer": "194672"
+        },
+        {
+          "question": "How tall was the tallest Christmas tree ever recorded in metres",
+          "answer": "64.6"
+        },
+        {
+          "question": "How heavy was the world's largest Christmas pudding in kilograms",
+          "answer": "3280"
+        },
+        {
+          "question": "How many people made up the largest human Christmas tree?",
+          "answer": "4030"
+        }
+      ]
+    },
+    {
+      "roundName": "Correction Centre",
+      "roundType": "buzzer",
+      "questions": [
+        {
+          "question": "Kristen Stewart accidentally loses loads of money in a wonderful life",
+          "answer": "James Stewart"
+        },
+        {
+          "question": "Clark Gable and Randy Quaid have the hap hap happiest Christmas in National Lampoons christmas Vacation",
+          "answer": "Clark Griswold"
+        },
+        {
+          "question": "Do they know its Christmas was a number one hit for Kool Aid in 1984",
+          "answer": "Band Aid"
+        },
+        {
+          "question": "The daily express is a film about a young boy who loses his belief in Santa Claus",
+          "answer": "Polar Express"
+        },
+        {
+          "question": "Kevin McAllister is left in New Jersey and has to stop the bad guys stealing the orphan's money from the Toy Chest in this Christmas Classic",
+          "answer": "New York"
+        },
+        {
+          "question": "The Grinch tries to steal Christmas from everyone who lives in Hopeville",
+          "answer": "Whoville"
+        },
+        {
+          "question": "Ebeneezer Goode is visited by 3 ghosts to make him change his ways in the Christmas Carol",
+          "answer": "Scrooge"
+        },
+        {
+          "question": "There are no boats in this song, more insults than any from Kirsty and the Pogues in this ferrytale of New York",
+          "answer": "fairy tale"
+        }
+      ]
+    },
+    {
+      "roundName": "The answer is in the question",
+      "roundType": "buzzer",
+      "questions": [
+        {
+          "question": "This green man will make the children grin, Christmas wouldn't be the same without him",
+          "answer": "Grinch"
+        },
+        {
+          "question": "This food item really goes well with turkey, people love to stuff in golden herby decilious balls",
+          "answer": "Stuffing"
+        },
+        {
+          "question": "Without this band is just wouldn't be Christmas, laden with festive cliches, Merry Christmas Everybody",
+          "answer": "Slade"
+        },
+        {
+          "question": "This reindeer isn't one of the first to lead the pack, come to think of it you might be surprised that he is the 6th in line",
+          "answer": "Comet"
+        },
+        {
+          "question": "This year Christmas is BAU, Bless the boy child Jesus Christ and get on with opening presents",
+          "answer": "Baubles"
+        },
+        {
+          "question": "A this time of year Santa gets up to all kind of adventures and instead of opening doors he goes down chimneys",
+          "answer": "Advent"
+        },
+        {
+          "question": "Every year I like to please myself by watching this comedy starring Will Ferrell as an orphan who grows up in the North Pole.",
+          "answer": "Elf"
+        },
+        {
+          "question": "Christmas tree ornaments are great but the best are at the very top",
+          "answer": "Star"
+        }
+      ]
+    },
+    {
+      "roundName": "I Am Terrible At Dating",
+      "roundType": "secret",
+      "questions": [
+        {
+          "question": "The first recorded Christmas celebration in Rome took place.",
+          "answer": "336"
+        },
+        {
+          "question": "Charles Dickens published A Christmas Carol.",
+          "answer": "1843"
+        },
+        {
+          "question": "The first Christmas card was commissioned by Sir Henry Cole.",
+          "answer": "1843"
+        },
+        {
+          "question": "The NORAD Santa-tracking tradition began.",
+          "answer": "1955"
+        },
+        {
+          "question": "The first commercial Christmas lights were produced by General Electric.",
+          "answer": "1903"
+        },
+        {
+          "question": "The first Christmas cracker was invented by Tom Smith in London",
+          "answer": "1847"
+        },
+        {
+          "question": "The first televised Christmas message by a British monarch was delivered by Queen Elizabeth II.",
+          "answer": "1957"
+        },
+        {
+          "question": "The Queen's Christmas message was first broadcast in colour.",
+          "answer": "1967"
+        },
+        {
+          "question": "St Francis of Assisi created the first famous live Nativity scene.",
+          "answer": "1223"
+        },
+        {
+          "question": "Christmas was officially banned in England by Parliament.",
+          "answer": "1647"
+        }
+      ]
+    },
+    {
+      "roundName": "Highbrow / Lowbrow",
+      "roundType": "highbrow_lowbrow",
+      "questions": [
+        {
+          "highbrow": "Which Victorian author published The Cricket on the Hearth in 1845?",
+          "lowbrow": "Who wrote A Christmas Carol?",
+          "answer": "Charles Dickens"
+        },
+        {
+          "highbrow": "Which bird, native to North America, was introduced to Britain in the 16th century by merchants trading through the Levant?",
+          "lowbrow": "Which meat is traditionally the centrepiece of many British Christmas dinners?",
+          "answer": "Turkey"
+        },
+        {
+          "highbrow": "When is St Stephen's day?",
+          "lowbrow": "What day is boxing day?",
+          "answer": "26th December"
+        },
+        {
+          "highbrow": "Which parasitic plant was considered sacred by the Druids, according to accounts by the Roman writer Pliny the Elder?",
+          "lowbrow": "Under which plant do people traditionally kiss at Christmas?",
+          "answer": "Mistletoe"
+        },
+        {
+          "highbrow": "Which Irving Berlin composition, introduced in the 1942 film Holiday Inn, won the Academy Award for Best Original Song?",
+          "lowbrow": "Which Bing Crosby Christmas song begins with the words \"I'm dreaming of a...\"?",
+          "answer": "White Christmas"
+        },
+        {
+          "highbrow": "The tradition of the Advent calendar is generally traced back to which European country?",
+          "lowbrow": "Which country is credited with popularising the Christmas tree tradition?",
+          "answer": "Germany"
+        },
+        {
+          "highbrow": "What is the name of the northern European region traditionally inhabited by the Sámi people, stretching across four countries?",
+          "lowbrow": "Where does Santa Claus supposedly live?",
+          "answer": "Lapland"
+        },
+        {
+          "highbrow": "Which country was the birthplace of playwright Henrik Ibsen and painter Edvard Munch?",
+          "lowbrow": "Which country donates London's Trafalgar Square Christmas tree?",
+          "answer": "Norway"
+        }
+      ]
+    },
+    {
+      "roundName": "Where is Kazahkstan",
+      "roundType": "map",
+      "questions": [
+        {
+          "question": "In which English city was Charles Dickens born, the author of A Christmas Carol?",
+          "mapImage": "/images/ukmap.jpeg",
+          "targetX": 74.55,
+          "targetY": 92.05,
+          "answer": "Portsmouth"
+        },
+        {
+          "question": "At which royal residence did Queen Charlotte reportedly introduce the Christmas tree tradition to Britain in 1800?",
+          "mapImage": "/images/ukmap.jpeg",
+          "targetX": 81.58,
+          "targetY": 82.2,
+          "answer": "Windsor"
+        }
+      ]
+    },
+    {
+      "roundName": "Vowel Movement",
+      "roundType": "vowel_movement",
+      "questions": [
+        {
+          "words": [
+            "Bioblu",
+            "Tonsul",
+            "Laghts",
+            "Stir",
+            "Ungil"
+          ],
+          "originalWords": [
+            "Bauble",
+            "Tinsel",
+            "Lights",
+            "Star",
+            "Angel"
+          ],
+          "answer": "Things on a Christmas Tree"
+        },
+        {
+          "words": [
+            "Pitutios",
+            "Stoffeng",
+            "Corrits",
+            "Gruvy",
+            "Tirkuy"
+          ],
+          "originalWords": [
+            "Potatoes",
+            "Stuffing",
+            "Carrots",
+            "Gravy",
+            "Turkey"
+          ],
+          "answer": "Christmas Dinner"
+        },
+        {
+          "words": [
+            "Dishar",
+            "Camot",
+            "Voxan",
+            "Dannor",
+            "Rodelph"
+          ],
+          "originalWords": [
+            "Dasher",
+            "Comet",
+            "Vixen",
+            "Donner",
+            "Rudolph"
+          ],
+          "answer": "Santa's reindeer"
+        },
+        {
+          "words": [
+            "Doo Hird",
+            "Krumpos",
+            "Hame Olinu",
+            "Olf",
+            "Frod Cloos"
+          ],
+          "originalWords": [
+            "Die Hard",
+            "Krampus",
+            "Home Alone",
+            "Elf",
+            "Fred Claus"
+          ],
+          "answer": "Christmas Movies"
+        },
+        {
+          "words": [
+            "The Axun",
+            "Dock Tha Hills",
+            "Uwiy On E Mingar",
+            "Solunt Nicht",
+            "Hilly Und Tho Evy"
+          ],
+          "originalWords": [
+            "The Oxen",
+            "Deck The Halls",
+            "Away in a manger",
+            "Silent Night",
+            "Holly and the ivy"
+          ],
+          "answer": "Christmas Songs/Carols"
+        }
+      ]
+    },
+    {
+      "roundName": "Broken Karaoke",
+      "roundType": "vowel_movement",
+      "questions": [
+        {
+          "words": [
+            "Quiet nocturn, Religious dark bit",
+            "everything is chill, everything is luminescent",
+            "Innocent girl, Parent and offspring",
+            "Godly rugrat, soft and luke warm",
+            "snore in god's kingdom"
+          ],
+          "originalWords": [
+            "Quiet night, holy night",
+            "All is well, all is bright",
+            "Round yon virgin, mother and child",
+            "Holy infant, tender and mild",
+            "Sleep in heavenly peace"
+          ],
+          "answer": "Silent night"
+        },
+        {
+          "words": [
+            "all of us hope you have a nice yuletide",
+            "all of us hope you have a nice yuletide",
+            "all of us hope you have a nice yuletide",
+            "and a good first of January"
+          ],
+          "originalWords": [
+            "we wish you a merry christmas",
+            "we wish you a merry christmas",
+            "we wish you a merry christmas",
+            "and a happy new year",
+            ""
+          ],
+          "answer": "we wish you a merry christmas"
+        },
+        {
+          "words": [
+            "everyone religious come here",
+            "be happy and champion",
+            "everyone religious come to where jesus was born",
+            "visit the boy",
+            "he wears the crown of God's winged people"
+          ],
+          "originalWords": [
+            "O Come All ye faithful",
+            "Joyful and triumphant",
+            "O come ye, come to bethlehem",
+            "come and behold him",
+            "born the king of angels"
+          ],
+          "answer": "O Come All ye Faithful"
+        },
+        {
+          "words": [
+            "us trio of monarchs of london football club be",
+            "give presents from a long way away",
+            "pitch and waterfall",
+            "glen and big hill",
+            "stalking a far away celestial body"
+          ],
+          "originalWords": [
+            "We three kings of orient are",
+            "bearing gifts we traverse so far",
+            "field and fountain",
+            "moor and mountain",
+            "following yonder star"
+          ],
+          "answer": "We three kings"
+        },
+        {
+          "words": [
+            "Ring out, joyfully above",
+            "In celestrial realm the chimes are chiming",
+            "Ring out, joyfully above",
+            "are filled with cherubim are doing karaoke",
+            "Miss Gaynor in the highest"
+          ],
+          "originalWords": [
+            "Ding Dong merrily on high",
+            "In Heaven Bells Are Ringing",
+            "Ding Dong verily the sky",
+            "is riv'n with angels singing",
+            "Gloria Hosanna in Excelsior"
+          ],
+          "answer": "Ding Dong Merrily on high"
+        }
+      ]
+    },
+    {
+      "roundName": "Put your finger on it",
+      "roundType": "map",
+      "questions": [
+        {
+          "question": "Which reindeer is dasher?",
+          "mapImage": "/images/reindeer.jpeg",
+          "targetX": 22.64,
+          "targetY": 36.74,
+          "answer": "second"
+        },
+        {
+          "question": "which of the following is wrong",
+          "mapImage": "/images/twelvedays.jpeg",
+          "targetX": 55.2,
+          "targetY": 82.95,
+          "answer": "There are only 5 golden rings"
+        },
+        {
+          "question": "Which engine is James?",
+          "mapImage": "/images/thomas.webp",
+          "targetX": 35.29,
+          "targetY": 51.89,
+          "answer": "Red engine"
+        }
+      ]
+    },
+    {
+      "roundName": "King Of The Jumble",
+      "roundType": "buzzer",
+      "questions": [
+        {
+          "question": "And Moan",
+          "answer": "Madonna"
+        },
+        {
+          "question": "A Bio Wed Div",
+          "answer": "David Bowie"
+        },
+        {
+          "question": "Presbyterians",
+          "answer": "Britney Spears"
+        },
+        {
+          "question": "Narcoleptic",
+          "answer": "Eric Clapton"
+        },
+        {
+          "question": "Jolt On Hen",
+          "answer": "Elton John"
+        },
+        {
+          "question": "Crap Brain Nearest",
+          "answer": "Sabrina Carpenter"
+        },
+        {
+          "question": "Almost Open",
+          "answer": "Post Malone"
+        },
+        {
+          "question": "Trashy Lyres",
+          "answer": "Harry Styles"
+        }
+      ]
+    }
+  ]
+}

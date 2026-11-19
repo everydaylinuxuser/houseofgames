@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>House of Games - Question Bank Editor</title>
+  <style>
+    body {
+      background: #0f172a;
+      color: #ffffff;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 30px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    .header-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    h1 { color: #f4d03f; margin: 0; }
+    .nav-link {
+      color: #38bdf8;
+      text-decoration: none;
+      font-weight: bold;
+      background: #1e293b;
+      padding: 10px 16px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+    }
+    .nav-link:hover { background: #334155; }
+
+    .card {
+      background: #1e293b;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 1px solid #334155;
+    }
+    .round-card {
+      background: #1e293b;
+      border: 2px solid #475569;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 25px;
+    }
+    .round-header {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 15px;
+      border-bottom: 1px solid #334155;
+      flex-wrap: wrap;
+    }
+    .question-item {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 12px;
+    }
+    .question-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    label {
+      display: block;
+      font-size: 13px;
+      color: #94a3b8;
+      margin-bottom: 4px;
+      font-weight: bold;
+    }
+    input[type="text"], input[type="number"], select {
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+      border-radius: 6px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #fff;
+      box-sizing: border-box;
+    }
+    .btn {
+      padding: 10px 16px;
+      font-size: 14px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .btn:hover { opacity: 0.9; }
+    .btn-green { background: #22c55e; color: white; }
+    .btn-blue { background: #3b82f6; color: white; }
+    .btn-purple { background: #8b5cf6; color: white; }
+    .btn-amber { background: #f59e0b; color: #000; }
+    .btn-cyan { background: #06b6d4; color: #000; }
+    .btn-pink { background: #ec4899; color: #fff; }
+    .btn-red { background: #ef4444; color: white; }
+    .btn-sm { padding: 6px 10px; font-size: 12px; }
+
+    .img-preview-row {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      margin-top: 10px;
+    }
+    .img-preview-row img {
+      height: 60px;
+      border-radius: 6px;
+      border: 1px solid #60a5fa;
+      background: #1e293b;
+    }
+    .editor-map-picker {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      border: 2px solid #06b6d4;
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: crosshair;
+      margin-top: 8px;
+    }
+    .editor-map-picker img {
+      display: block;
+      max-height: 260px;
+      max-width: 100%;
+    }
+    .editor-target-pin {
+      position: absolute;
+      transform: translate(-50%, -100%);
+      font-size: 24px;
+      pointer-events: none;
+    }
+    #toast {
+      position: fixed;
+      bottom: 25px;
+      right: 25px;
+      background: #22c55e;
+      color: white;
+      padding: 14px 24px;
+      border-radius: 10px;
+      font-weight: bold;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      display: none;
+      z-index: 100;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header-bar">
+    <h1>📝 Question Bank Editor</h1>
+    <a href="/admin.html" class="nav-link">👑 Back to Host Admin</a>
+  </div>
+
+  <!-- FILE LOAD / CREATE / SAVE BAR -->
+  <div class="card">
+    <div class="grid-2" style="align-items: end;">
+      <div>
+        <label>Load Existing File:</label>
+        <div style="display: flex; gap: 8px;">
+          <select id="file-select" onchange="loadSelectedFile()">
+            <option value="">-- Select File --</option>
+          </select>
+          <button class="btn btn-purple" onclick="createNewFile()" style="white-space: nowrap;">+ New Set</button>
+        </div>
+      </div>
+
+      <div>
+        <label>Save As Filename (in /questions):</label>
+        <div style="display: flex; gap: 8px;">
+          <input type="text" id="filename-input" placeholder="e.g. halloween.json" />
+          <button class="btn btn-green" onclick="saveFile()" style="white-space: nowrap;">💾 Save File</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROUNDS CONTAINER -->
+  <div id="rounds-container"></div>
+
+  <div style="text-align: center; margin-top: 20px; margin-bottom: 50px;">
+    <button class="btn btn-blue" style="font-size: 16px; padding: 14px 28px;" onclick="addRound()">+ Add New Round</button>
+    <button class="btn btn-green" style="font-size: 16px; padding: 14px 28px; margin-left: 10px;" onclick="saveFile()">💾 Save All Changes</button>
+  </div>
+
+  <div id="toast">Saved!</div>
+
+  <script>
+    let currentData = { rounds: [] };
+
+    window.addEventListener('load', async () => {
+      await refreshFileList();
+    });
+
+    async function refreshFileList(selectFilename = null) {
+      try {
+        const res = await fetch('/api/question-sets');
+        const data = await res.json();
+        const select = document.getElementById('file-select');
+        
+        select.innerHTML = '<option value="">-- Choose a Question Set --</option>' +
+          data.sets.map(f => `<option value="${f}">${f}</option>`).join('');
+
+        const toLoad = selectFilename || data.current || (data.sets.length > 0 ? data.sets[0] : '');
+        if (toLoad && data.sets.includes(toLoad)) {
+          select.value = toLoad;
+          await loadSelectedFile();
+        } else {
+          createNewFile();
+        }
+      } catch (err) {
+        console.error('Error fetching file list:', err);
+      }
+    }
+
+    async function loadSelectedFile() {
+      const filename = document.getElementById('file-select').value;
+      if (!filename) return;
+
+      try {
+        const res = await fetch(`/api/questions/${encodeURIComponent(filename)}`);
+        if (!res.ok) throw new Error('Failed to load file');
+        currentData = await res.json();
+        if (!currentData.rounds) currentData.rounds = [];
+        document.getElementById('filename-input').value = filename;
+        renderEditor();
+      } catch (err) {
+        alert('Could not load question file.');
+      }
+    }
+
+    function createNewFile() {
+      document.getElementById('file-select').value = '';
+      document.getElementById('filename-input').value = 'new_theme.json';
+      currentData = {
+        rounds: [
+          {
+            roundName: 'Vowel Movement',
+            roundType: 'vowel_movement',
+            questions: [
+              {
+                _mode: 'vm',
+                words: ['COT', 'DIG', 'MIECA', 'HIRSA', 'POG'],
+                originalWords: ['CAT', 'DOG', 'MOUSE', 'HORSE', 'PIG'],
+                answer: 'Animals'
+              }
+            ]
+          }
+        ]
+      };
+      renderEditor();
+    }
+
+    async function saveFile() {
+      const filename = document.getElementById('filename-input').value.trim();
+      if (!filename) {
+        alert('Please enter a filename before saving!');
+        return;
+      }
+
+      const cleanedData = {
+        rounds: currentData.rounds.map(r => ({
+          roundName: r.roundName.trim() || 'Untitled Round',
+          roundType: r.roundType || 'buzzer',
+          questions: r.questions.map(q => {
+            if (q._mode === 'image') {
+              return {
+                image1: (q.image1 || '').trim(),
+                image2: (q.image2 || '').trim(),
+                answer: (q.answer || '').trim()
+              };
+            } else if (q._mode === 'hl') {
+              return {
+                highbrow: (q.highbrow || '').trim(),
+                lowbrow: (q.lowbrow || '').trim(),
+                answer: (q.answer || '').trim()
+              };
+            } else if (q._mode === 'map') {
+              return {
+                question: (q.question || '').trim(),
+                mapImage: (q.mapImage || '').trim(),
+                targetX: Number(q.targetX) || 50,
+                targetY: Number(q.targetY) || 50,
+                answer: (q.answer || '').trim()
+              };
+            } else if (q._mode === 'vm') {
+              return {
+                words: (q.words || []).map(w => (w || '').trim()).filter(Boolean),
+                originalWords: (q.originalWords || []).map(w => (w || '').trim()),
+                answer: (q.answer || '').trim()
+              };
+            } else {
+              return {
+                question: (q.question || '').trim(),
+                answer: (q.answer || '').trim()
+              };
+            }
+          })
+        }))
+      };
+
+      try {
+        const res = await fetch(`/api/questions/${encodeURIComponent(filename)}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(cleanedData)
+        });
+        const result = await res.json();
+        if (result.success) {
+          showToast(`✅ Saved ${result.filename}!`);
+          await refreshFileList(result.filename);
+        } else {
+          alert('Error saving file.');
+        }
+      } catch (err) {
+        alert('Network error while saving file.');
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.innerText = msg;
+      toast.style.display = 'block';
+      setTimeout(() => { toast.style.display = 'none'; }, 3000);
+    }
+
+    function addRound() {
+      currentData.rounds.push({
+        roundName: 'New Round',
+        roundType: 'buzzer',
+        questions: [{ _mode: 'text', question: '', answer: '' }]
+      });
+      renderEditor();
+    }
+
+    function deleteRound(rIdx) {
+      if (confirm('Delete this entire round and all its questions?')) {
+        currentData.rounds.splice(rIdx, 1);
+        renderEditor();
+      }
+    }
+
+    function moveRound(rIdx, dir) {
+      const newIdx = rIdx + dir;
+      if (newIdx < 0 || newIdx >= currentData.rounds.length) return;
+      const temp = currentData.rounds[rIdx];
+      currentData.rounds[rIdx] = currentData.rounds[newIdx];
+      currentData.rounds[newIdx] = temp;
+      renderEditor();
+    }
+
+    function updateRoundField(rIdx, field, value) {
+      currentData.rounds[rIdx][field] = value;
+    }
+
+    function addQuestion(rIdx, mode = 'text') {
+      if (mode === 'image') {
+        currentData.rounds[rIdx].questions.push({ _mode: 'image', image1: '/images/', image2: '/images/', answer: '' });
+      } else if (mode === 'hl') {
+        currentData.rounds[rIdx].questions.push({ _mode: 'hl', highbrow: '', lowbrow: '', answer: '' });
+      } else if (mode === 'map') {
+        currentData.rounds[rIdx].questions.push({ _mode: 'map', question: '', mapImage: '/images/uk_map.png', targetX: 50, targetY: 50, answer: '' });
+      } else if (mode === 'vm') {
+        currentData.rounds[rIdx].questions.push({ _mode: 'vm', words: ['', '', '', '', ''], originalWords: ['', '', '', '', ''], answer: '' });
+      } else {
+        currentData.rounds[rIdx].questions.push({ _mode: 'text', question: '', answer: '' });
+      }
+      renderEditor();
+    }
+
+    function deleteQuestion(rIdx, qIdx) {
+      currentData.rounds[rIdx].questions.splice(qIdx, 1);
+      renderEditor();
+    }
+
+    function toggleQuestionMode(rIdx, qIdx, newMode) {
+      const q = currentData.rounds[rIdx].questions[qIdx];
+      q._mode = newMode;
+      if (newMode === 'image') {
+        q.image1 = q.image1 || '/images/';
+        q.image2 = q.image2 || '/images/';
+      } else if (newMode === 'hl') {
+        q.highbrow = q.highbrow || q.question || '';
+        q.lowbrow = q.lowbrow || '';
+      } else if (newMode === 'map') {
+        q.mapImage = q.mapImage || '/images/uk_map.png';
+        q.targetX = q.targetX !== undefined ? q.targetX : 50;
+        q.targetY = q.targetY !== undefined ? q.targetY : 50;
+      } else if (newMode === 'vm') {
+        q.words = (q.words && q.words.length === 5) ? q.words : ['', '', '', '', ''];
+        q.originalWords = (q.originalWords && q.originalWords.length === 5) ? q.originalWords : ['', '', '', '', ''];
+      } else {
+        q.question = q.question || q.highbrow || '';
+      }
+      renderEditor();
+    }
+
+    function updateQuestionField(rIdx, qIdx, field, value) {
+      currentData.rounds[rIdx].questions[qIdx][field] = value;
+      if (field === 'image1' || field === 'image2') {
+        const imgEl = document.getElementById(`thumb-${rIdx}-${qIdx}-${field}`);
+        if (imgEl) imgEl.src = value;
+      }
+      if (field === 'mapImage') {
+        const mapImgEl = document.getElementById(`map-thumb-${rIdx}-${qIdx}`);
+        if (mapImgEl) mapImgEl.src = value;
+      }
+    }
+
+    function updateVMWord(rIdx, qIdx, wordIdx, isOriginal, value) {
+      const q = currentData.rounds[rIdx].questions[qIdx];
+      if (!q.words) q.words = ['', '', '', '', ''];
+      if (!q.originalWords) q.originalWords = ['', '', '', '', ''];
+      if (isOriginal) {
+        q.originalWords[wordIdx] = value;
+      } else {
+        q.words[wordIdx] = value;
+      }
+    }
+
+    function pickMapTarget(event, rIdx, qIdx) {
+      const wrapper = event.currentTarget;
+      const rect = wrapper.getBoundingClientRect();
+      const xPct = Number((((event.clientX - rect.left) / rect.width) * 100).toFixed(2));
+      const yPct = Number((((event.clientY - rect.top) / rect.height) * 100).toFixed(2));
+
+      currentData.rounds[rIdx].questions[qIdx].targetX = xPct;
+      currentData.rounds[rIdx].questions[qIdx].targetY = yPct;
+
+      const pin = document.getElementById(`map-target-pin-${rIdx}-${qIdx}`);
+      if (pin) {
+        pin.style.left = `${xPct}%`;
+        pin.style.top = `${yPct}%`;
+      }
+      const coordsLabel = document.getElementById(`map-coords-label-${rIdx}-${qIdx}`);
+      if (coordsLabel) {
+        coordsLabel.innerText = `X: ${xPct}%, Y: ${yPct}%`;
+      }
+    }
+
+    function renderEditor() {
+      const container = document.getElementById('rounds-container');
+      if (currentData.rounds.length === 0) {
+        container.innerHTML = '<div class="card" style="text-align:center; color:#94a3b8;">No rounds yet. Click "+ Add New Round" below to get started!</div>';
+        return;
+      }
+
+      container.innerHTML = currentData.rounds.map((round, rIdx) => {
+        const questionsHtml = round.questions.map((q, qIdx) => {
+          if (!q._mode) {
+            if (q.words && q.words.length > 0) q._mode = 'vm';
+            else if (q.mapImage) q._mode = 'map';
+            else if (q.highbrow || q.lowbrow) q._mode = 'hl';
+            else if (q.image1 || q.image2) q._mode = 'image';
+            else q._mode = 'text';
+          }
+          const mode = q._mode;
+
+          let bodyHtml = '';
+          if (mode === 'image') {
+            bodyHtml = `
+              <div class="grid-2" style="margin-bottom: 10px;">
+                <div>
+                  <label>Image 1 Path:</label>
+                  <input type="text" value="${escapeHtml(q.image1 || '')}" oninput="updateQuestionField(${rIdx}, ${qIdx}, 'image1', this.value)" placeholder="/images/pic1.jpeg" />
+                </div>
+                <div>
+                  <label>Image 2 Path:</label>
+                  <input type="text" value="${escapeHtml(q.image2 || '')}" oninput="updateQuestionField(${rIdx}, ${qIdx}, 'image2', this.value)" placeholder="/images/pic2.jpeg" />
+                </div>
+              </div>
+              <div class="img-preview-row" style="margin-bottom: 10px;">
+                <img id="thumb-${rIdx}-${qIdx}-image1" src="${escapeHtml(q.image1 || '')}" onerror="this.style.opacity=0.2" onload="this.style.opacity=1" />
+                <span style="color:#f4d03f; font-weight:bold;">+</span>
+                <img id="thumb-${rIdx}-${qIdx}-image2" src="${escapeHtml(q.image2 || '')}" onerror="this.style.opacity=0.2" onload="this.style.opacity=1" />
+              </div>
+            `;
+          } else if (mode === 'hl') {
+            bodyHtml = `
+              <div style="margin-bottom: 10px;">
+                <label style="color: #f4d03f;">🎩 Highbrow Question (Hard — 2 Points):</label>
+                <input type="text" value="${escapeHtml(q.highbrow || '')}" oninput="updateQuestionField(${rIdx}, ${qIdx}, 'highbrow', this.value)" placeholder="Enter difficult highbrow question..." />
+              </div>
+              <div style="margin-bottom: 10px;">
+                <label style="color: #38bdf8;">🧢 Lowbrow Question (Easy — 1 Point):</label>
+                <input type="text" value="${escapeHtml(q.lowbrow || '')}" oninput="updateQuestionField(${rIdx}, ${qIdx}, 'lowbrow', this.value)" placeholder="Enter easier lowbrow clue with the same answer..." />
+              </div>
+            `;
+          } else if (mode === 'map') {
+            const tx = q.targetX !== undefined ? q.targetX : 50;
+            const ty = q.targetY !== undefined ? q.targetY : 50;
+            bodyHtml = `
+              <div class="grid-2" style="margin-bottom: 10px;">
+                <div>
+                  <label>Location Question Prompt:</label>
+                  <input type="text" value="${escapeHtml(q.question || '')}" oninput="updateQuestionField(${rIdx}, ${qIdx}, 'question', this.value)" placeholder="e.g. Where is Inverurie?" />
+                </div>
+                <div>
+                  <label>Map Image Path (in /public/images):</label>
+                  <input type="text" value="${escapeHtml(q.mapImage || '')}" oninput="updateQuestionField(${rIdx}, ${qIdx}, 'mapImage', this.value)" placeholder="/images/uk_map.png" />
+                </div>
+              </div>
+              <div style="margin-bottom: 12px;">
+                <label style="color: #67e8f9;">Click on the map below to set the exact target location (<span id="map-coords-label-${rIdx}-${qIdx}">X: ${tx}%, Y: ${ty}%</span>):</label>
+                <div class="editor-map-picker" onclick="pickMapTarget(event, ${rIdx}, ${qIdx})">
+                  <img id="map-thumb-${rIdx}-${qIdx}" src="${escapeHtml(q.mapImage || '')}" onerror="this.style.opacity=0.2" onload="this.style.opacity=1" />
+                  <div id="map-target-pin-${rIdx}-${qIdx}" class="editor-target-pin" style="left: ${tx}%; top: ${ty}%;">🎯</div>
+                </div>
+              </div>
+            `;
+          } else if (mode === 'vm') {
+            const words = q.words || ['', '', '', '', ''];
+            const origs = q.originalWords || ['', '', '', '', ''];
+            let rowsHtml = '';
+            for (let i = 0; i < 5; i++) {
+              rowsHtml += `
+                <div class="grid-2" style="margin-bottom: 6px;">
+                  <div>
+                    <input type="text" value="${escapeHtml(words[i] || '')}" oninput="updateVMWord(${rIdx}, ${qIdx}, ${i}, false, this.value)" placeholder="Clue ${i + 1} (e.g. COT)" />
+                  </div>
+                  <div>
+                    <input type="text" value="${escapeHtml(origs[i] || '')}" oninput="updateVMWord(${rIdx}, ${qIdx}, ${i}, true, this.value)" placeholder="Original ${i + 1} (e.g. CAT)" />
+                  </div>
+                </div>
+              `;
+            }
+            bodyHtml = `
+              <div style="margin-bottom: 10px;">
+                <div class="grid-2">
+                  <label style="color: #f472b6;">🔤 Altered Words (Shown 1 by 1):</label>
+                  <label style="color: #94a3b8;">✅ Original Words (Shown at Reveal):</label>
+                </div>
+                ${rowsHtml}
+              </div>
+            `;
+          } else {
+            bodyHtml = `
+              <div style="margin-bottom: 10px;">
+                <label>Question Prompt:</label>
+                <input type="text" value="${escapeHtml(q.question || '')}" oninput="updateQuestionField(${rIdx}, ${qIdx}, 'question', this.value)" placeholder="Enter question text..." />
+              </div>
+            `;
+          }
+
+          return `
+            <div class="question-item">
+              <div class="question-top">
+                <strong style="color: #38bdf8;">Clue #${qIdx + 1}</strong>
+                <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+                  <button class="btn btn-sm ${mode === 'text' ? 'btn-blue' : ''}" style="${mode !== 'text' ? 'background:#334155;color:#94a3b8;' : ''}" onclick="toggleQuestionMode(${rIdx}, ${qIdx}, 'text')">Text Clue</button>
+                  <button class="btn btn-sm ${mode === 'image' ? 'btn-purple' : ''}" style="${mode !== 'image' ? 'background:#334155;color:#94a3b8;' : ''}" onclick="toggleQuestionMode(${rIdx}, ${qIdx}, 'image')">2 Images</button>
+                  <button class="btn btn-sm ${mode === 'hl' ? 'btn-amber' : ''}" style="${mode !== 'hl' ? 'background:#334155;color:#94a3b8;' : ''}" onclick="toggleQuestionMode(${rIdx}, ${qIdx}, 'hl')">Highbrow/Lowbrow</button>
+                  <button class="btn btn-sm ${mode === 'map' ? 'btn-cyan' : ''}" style="${mode !== 'map' ? 'background:#334155;color:#94a3b8;' : ''}" onclick="toggleQuestionMode(${rIdx}, ${qIdx}, 'map')">Map Pin</button>
+                  <button class="btn btn-sm ${mode === 'vm' ? 'btn-pink' : ''}" style="${mode !== 'vm' ? 'background:#334155;color:#94a3b8;' : ''}" onclick="toggleQuestionMode(${rIdx}, ${qIdx}, 'vm')">Vowel Movement</button>
+                  <button class="btn btn-sm btn-red" onclick="deleteQuestion(${rIdx}, ${qIdx})" style="margin-left: 8px;">✕</button>
+                </div>
+              </div>
+
+              ${bodyHtml}
+
+              <div>
+                <label style="color: #4ade80;">Correct Answer / Linking Category:</label>
+                <input type="text" value="${escapeHtml(q.answer || '')}" oninput="updateQuestionField(${rIdx}, ${qIdx}, 'answer', this.value)" placeholder="Enter answer..." />
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <div class="round-card">
+            <div class="round-header">
+              <div style="flex: 2; min-width: 200px;">
+                <label>Round Name:</label>
+                <input type="text" value="${escapeHtml(round.roundName || '')}" oninput="updateRoundField(${rIdx}, 'roundName', this.value)" />
+              </div>
+              <div style="flex: 1; min-width: 160px;">
+                <label>Default Round Type:</label>
+                <select onchange="updateRoundField(${rIdx}, 'roundType', this.value)">
+                  <option value="buzzer" ${round.roundType === 'buzzer' ? 'selected' : ''}>Buzzer</option>
+                  <option value="secret" ${round.roundType === 'secret' ? 'selected' : ''}>Secret Input</option>
+                  <option value="individual" ${round.roundType === 'individual' ? 'selected' : ''}>Individual / Hot Seat</option>
+                  <option value="highbrow_lowbrow" ${round.roundType === 'highbrow_lowbrow' ? 'selected' : ''}>Highbrow / Lowbrow</option>
+                  <option value="map" ${round.roundType === 'map' ? 'selected' : ''}>Where is Kazakhstan? (Map)</option>
+                  <option value="vowel_movement" ${round.roundType === 'vowel_movement' ? 'selected' : ''}>Vowel Movement</option>
+                </select>
+              </div>
+              <div style="display: flex; gap: 6px; align-self: flex-end;">
+                <button class="btn btn-sm" style="background:#334155; color:white;" onclick="moveRound(${rIdx}, -1)" title="Move Up">↑</button>
+                <button class="btn btn-sm" style="background:#334155; color:white;" onclick="moveRound(${rIdx}, 1)" title="Move Down">↓</button>
+                <button class="btn btn-sm btn-red" onclick="deleteRound(${rIdx})">Delete Round</button>
+              </div>
+            </div>
+
+            ${questionsHtml}
+
+            <div style="margin-top: 12px; display: flex; gap: 10px; flex-wrap: wrap;">
+              <button class="btn btn-sm btn-blue" onclick="addQuestion(${rIdx}, 'text')">+ Add Text Question</button>
+              <button class="btn btn-sm btn-purple" onclick="addQuestion(${rIdx}, 'image')">+ Add 2-Image Clue</button>
+              <button class="btn btn-sm btn-amber" onclick="addQuestion(${rIdx}, 'hl')">+ Add Highbrow/Lowbrow</button>
+              <button class="btn btn-sm btn-cyan" onclick="addQuestion(${rIdx}, 'map')">+ Add Map Pin Clue</button>
+              <button class="btn btn-sm btn-pink" onclick="addQuestion(${rIdx}, 'vm')">+ Add Vowel Movement</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+    }
+  </script>
+</body>
+</html>
